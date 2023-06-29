@@ -1,4 +1,4 @@
-## AuctionDrafter  
+## AuctionDrafter
 
 ### Description
 Auction Style 5vs5 Team Drafter GUI made in python3(pyqt5)  
