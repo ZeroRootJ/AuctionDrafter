@@ -1,4 +1,5 @@
-## AuctionDrafter
+## AuctionDrafter  
+<img width="100%" src="https://github.com/ZeroRootJ/AuctionDrafter/assets/42975370/8e02b5d3-c766-431a-9bda-79a78a59b020"/>
 
 ### Description
 Auction Style 5vs5 Team Drafter GUI made in python3(pyqt5)  
