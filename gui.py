@@ -37,7 +37,7 @@ class InitScreen(QMainWindow):
         self.initUI()
     def initUI(self):
         layout = QVBoxLayout()
-        label = QLabel("Welcome to the First Screen!")
+        label = QLabel("Welcome!")
         layout.addWidget(label)
 
         leaderlayout = QHBoxLayout()
@@ -54,14 +54,14 @@ class InitScreen(QMainWindow):
 
         layout.addStretch(1)
 
-        button = QPushButton("Go to Second Screen")
+        button = QPushButton("Fight")
         button.clicked.connect(self.go_to_second_screen)
         layout.addWidget(button)
         central_widget = QWidget()
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
 
-        self.setWindowTitle("First Screen")
+        self.setWindowTitle("AuctionDrafter")
         self.resize(int(1280), 900)  # Set the window size to 1920x1080
 
         # Position the window at the center of the screen
