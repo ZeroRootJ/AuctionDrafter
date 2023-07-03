@@ -1,11 +1,10 @@
 import sys
 from PyQt5.QtGui import QPixmap, QIntValidator
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QDesktopWidget, QHBoxLayout, QLineEdit
+from PyQt5.QtWidgets import QCheckBox, QComboBox, QMainWindow, QWidget, QApplication, QVBoxLayout, QLabel, QPushButton, QDesktopWidget, QHBoxLayout, QLineEdit
 from PyQt5 import QtCore
 from PyQt5.QtCore import QTimer, QTime
 import random
 
-global playerdata
 playerdata= {
     "이준호": {"name": "이준호", "price": 0, "image_path1": "LAS\미미1.png", "image_path2": "LAS\미미2.JPG"},
     "김도현": {"name": "김도현", "price": 0, "image_path1": "LAS\엘첼1.png", "image_path2": "LAS\엘첼2.JPG"},
@@ -31,13 +30,118 @@ playerdata= {
 
 
 
+
+class InitScreen(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+    def initUI(self):
+        layout = QVBoxLayout()
+        label = QLabel("Welcome to the First Screen!")
+        layout.addWidget(label)
+
+        leaderlayout = QHBoxLayout()
+        leaderlayout.addLayout(self.blueleaderUI())
+        leaderlayout.addLayout(self.redleaderUI())
+
+        layout.addLayout(leaderlayout)
+
+        self.ischecked = {}
+        for name in playerdata.keys():
+            self.ischecked[name] = self.makecheckbox(name)
+            layout.addWidget(self.ischecked[name])
+
+
+        layout.addStretch(1)
+
+        button = QPushButton("Go to Second Screen")
+        button.clicked.connect(self.go_to_second_screen)
+        layout.addWidget(button)
+        central_widget = QWidget()
+        central_widget.setLayout(layout)
+        self.setCentralWidget(central_widget)
+
+        self.setWindowTitle("First Screen")
+        self.resize(int(1280), 900)  # Set the window size to 1920x1080
+
+        # Position the window at the center of the screen
+        screen = QDesktopWidget().screenGeometry()
+        x = (screen.width() - self.width()) // 2
+        y = (screen.height() - self.height()) // 2
+        self.move(x, y)
+
+        # self.setStyleSheet("background-color: black;")
+        # Show the main window
+        # self.show()
+
+    def blueleaderUI(self):
+        layout = QVBoxLayout()
+        self.blue_leader_label = QLabel("BLUE Leader: ", self)
+        self.blue_leader_label.setGeometry(0, 0, 200, 30)
+        layout.addWidget(self.blue_leader_label)
+        self.blue_combo_box = QComboBox(self)
+        self.blue_combo_box.setGeometry(0, 0, 200, 30)
+        for name in playerdata.keys():
+            self.blue_combo_box.addItem(name)
+        self.blue_combo_box.currentIndexChanged.connect(self.on_blue_selection_change)
+        layout.addWidget(self.blue_combo_box)
+        return layout
+
+    def redleaderUI(self):
+        layout = QVBoxLayout()
+        self.red_leader_label = QLabel("RED Leader: ", self)
+        self.red_leader_label.setGeometry(0, 0, 200, 30)
+        layout.addWidget(self.red_leader_label)
+        self.red_combo_box = QComboBox(self)
+        self.red_combo_box.setGeometry(0, 0, 200, 30)
+        for name in playerdata.keys():
+            self.red_combo_box.addItem(name)
+        self.red_combo_box.currentIndexChanged.connect(self.on_red_selection_change)
+        layout.addWidget(self.red_combo_box)
+        return layout
+
+    def makecheckbox(self, name):
+        self.checkbox = QCheckBox(name, self)
+        self.checkbox.setGeometry(0, 0, 200, 30)
+
+        return self.checkbox
+
+    def on_blue_selection_change(self, index):
+        selected_value = self.blue_combo_box.currentText()
+        self.blue_leader_label.setText("BLUE Leader: " + selected_value)
+
+    def on_red_selection_change(self, index):
+            selected_value = self.red_combo_box.currentText()
+            self.red_leader_label.setText("RED Leader: " + selected_value)
+    def go_to_second_screen(self):
+        self.hide()
+        # secondscreen = MainWindow()
+
+
+        global teamblue, teamred, playernames
+
+        teamblue = [self.blue_combo_box.currentText()]
+        teamred = [self.red_combo_box.currentText()]
+        playernames = []
+        for name in self.ischecked:
+            if self.ischecked[name].isChecked():
+                playernames.append(name)
+
+        self.secondscreen = MainWindow()
+        self.secondscreen.show()
+
+
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         # CONFIGURATION
-        self.teamblue = ["정영근"]
-        self.teamred = ["이유환"]
-        self.playernames = ["신주형", "이한희", "박성준", "도인탁", "유지호", "김도현", "박은석", "게스트1"]
+
+        global teamblue, teamred, playernames
+
+        self.teamblue = teamblue
+        self.teamred = teamred
+        self.playernames = playernames
+
         self.timelimit = 15
 
         self.bidorder = random.sample(self.playernames, len(self.playernames))
@@ -74,7 +178,7 @@ class MainWindow(QWidget):
 
         self.setStyleSheet("background-color: black;")
         # Show the main window
-        self.show()
+        # self.show()
 
     def candidateUI(self):
         player_layout = QHBoxLayout()
@@ -384,5 +488,7 @@ class MainWindow(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    mainWindow = MainWindow()
+    first_screen = InitScreen()
+    # secondscreen = MainWindow()
+    first_screen.show()
     sys.exit(app.exec_())
